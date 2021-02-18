@@ -27,7 +27,13 @@ public class Abstraction implements LambdaExpr{
 
 	@Override
 	public LambdaExpr substitute(Variable var, LambdaExpr value) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		String replacement;
+		
+		if (value.type() == ExprKind.VARIABLE) {
+			replacement = body.replace(boundVar.toString(), ((Variable)value).toString());
+		}
+		
+		return value;
 	}
 
 	@Override
@@ -35,4 +41,8 @@ public class Abstraction implements LambdaExpr{
 		return ExprKind.ABSTRACTION;
 	}
 	
+	@Override
+	public String toString() {
+		return "";
+	}
 }

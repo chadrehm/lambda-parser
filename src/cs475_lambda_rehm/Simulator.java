@@ -17,8 +17,8 @@ public class Simulator {
 			LambdaExpr operand1 = application.getOperand1();
 			LambdaExpr operand2 = application.getOperand2();
 			
-			if (operand1.type() == ExprKind.ABSTRACTION) {
-				
+			if (operand1.type() == ExprKind.ABSTRACTION && operand1.type() == ExprKind.VARIABLE) {
+				operand1.substitute((Variable)operand2, null);
 			}
 		} 
 		

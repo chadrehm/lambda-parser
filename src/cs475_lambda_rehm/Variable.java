@@ -35,5 +35,8 @@ public class Variable implements LambdaExpr {
 		return ExprKind.VARIABLE;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return Character.toString(name);
+	}
 }

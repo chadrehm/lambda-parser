@@ -37,7 +37,7 @@ public class Parser {
 		int period = term.indexOf(".");
 		// Get the next character after the period
 		String body = term.substring(period + 1, term.indexOf(")"));
-		abstraction.setBody(body);
+		abstraction.setBody(body.trim());
 		
 		return abstraction;		
 	}
