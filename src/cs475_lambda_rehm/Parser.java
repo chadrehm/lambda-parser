@@ -1,16 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @author Chad Rehm
+ * @data 2/18/21
+ * @descriptioin this class parses a lambda expression
  */
 package cs475_lambda_rehm;
 
-/**
- *
- * @author Chad Rehm
- */
 public class Parser {
-	public LambdaExpr parse(String term) {
+	public LambdaExpr parse(String term)  throws ParseException {
 		int rightParenIndex = findBalancedRightParenPos(term);
 		LambdaExpr lambdaExpr = null;
 		
@@ -36,13 +32,18 @@ public class Parser {
 		
 		int period = term.indexOf(".");
 		// Get the next character after the period
-		String body = term.substring(period + 1, term.indexOf(")"));
-		abstraction.setBody(body.trim());
+		String[] bodyStr = term.substring(period + 1, term.indexOf(")")).trim().split(" ");
+		LambdaExpr[] body = new LambdaExpr[bodyStr.length];
+		
+		for (int i = 0; i < bodyStr.length; i++) {
+			body[i] = new Variable(bodyStr[i].charAt(0));
+		}
+		abstraction.setBody(body);
 		
 		return abstraction;		
 	}
 	
-	private Application parseApplication(String term) {
+	private Application parseApplication(String term) throws ParseException{
 		Application application = new Application();
 		int rightParenIndex = findBalancedRightParenPos(term);
 		
@@ -56,7 +57,7 @@ public class Parser {
 		return new Variable(term.charAt(1));
 	}
 	
-	private int findBalancedRightParenPos(String term) {
+	private int findBalancedRightParenPos(String term) throws ParseException {
 		int parenCount = 0;
 		int loopCount = 0;
 		int rightParenIndex = -1;
@@ -75,14 +76,14 @@ public class Parser {
 			}
 			
 			if (parenCount < 0) {
-				//throw new error
+				throw new ParseException("No opening parenthesis found.");
 			}
 			
 			loopCount++;
 		} while(loopCount <= term.length());
 		
-		if (loopCount != 0) {
-			// throw new error
+		if (parenCount != 0) {
+			throw new ParseException("No closing parenthesis found.");
 		}
 		
 		return rightParenIndex;

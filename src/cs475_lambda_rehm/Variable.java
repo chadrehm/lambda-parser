@@ -1,14 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @author Chad Rehm
+ * @data 2/18/21
+ * @descriptioin  This class represents a lambda variable
  */
 package cs475_lambda_rehm;
 
-/**
- *
- * @author Chad Rehm
- */
 public class Variable implements LambdaExpr {
 	private char name;
 	
@@ -38,5 +34,13 @@ public class Variable implements LambdaExpr {
 	@Override
 	public String toString() {
 		return Character.toString(name);
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Variable)) { 
+			return false; 
+		}
+		return name == ((Variable)o).getName();
 	}
 }

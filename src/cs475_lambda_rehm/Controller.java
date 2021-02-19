@@ -21,15 +21,12 @@ public class Controller{
 	}
 	
 	public void runProgram() {
-		Parser parser = new Parser();
-		LambdaExpr lambdaExpr;
-		Simulator simulator = new Simulator();
 		String userContinue = "y";
 		
 		while(!userContinue.equals("n")) {
-			String lambdaExp = this.promptInput();
-			lambdaExpr = parser.parse(lambdaExp);
-			lambdaExpr = simulator.betaReduce(lambdaExpr);
+			String lambdaStr = this.promptInput();
+			
+			LambdaExpr lambdaExpr = execute(lambdaStr);
 
 			displayLambdaExpr(lambdaExpr);
 			
@@ -37,16 +34,28 @@ public class Controller{
 		}
 	}
 	
+	protected LambdaExpr execute(String lambdaStr) {
+		Parser parser = new Parser();
+		Simulator simulator = new Simulator();
+		LambdaExpr lambdaExpr = parser.parse(lambdaStr);
+		lambdaExpr = simulator.betaReduce(lambdaExpr);
+	
+		return lambdaExpr;
+	}
+	
 	private void displayLambdaExpr(LambdaExpr lambdaExpr) {
 		if (lambdaExpr.type() == ExprKind.ABSTRACTION) {
 			Abstraction abstraction = (Abstraction)lambdaExpr;
 		
-			JOptionPane.showMessageDialog(frame, String.format("The Lambda Expression is: L%s. %s", 
-				abstraction.getBoundVar().getName(), abstraction.getBody()));
+			JOptionPane.showMessageDialog(frame, String.format("The Lambda Expression is: %s", 
+				abstraction.toString()));
 		
+		} else if(lambdaExpr.type() == ExprKind.VARIABLE) {
+			JOptionPane.showMessageDialog(frame, String.format("The Lambda Expression is: %s",
+				((Variable)lambdaExpr).toString()));
 		} else {
 			JOptionPane.showMessageDialog(frame, String.format("The Lambda Expression is: %s",
-				((Variable)lambdaExpr).getName()));
+				((Application)lambdaExpr).toString()));
 		}
 	}
 	

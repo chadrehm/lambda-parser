@@ -9,7 +9,7 @@ public class SimulatorTest {
 	}
 
 	@Test
-	public void testBetaReduce() {
+	public void testBetaReduce() throws Exception{
 		Simulator sim = new Simulator();
 		Parser parser = new Parser();
 		
