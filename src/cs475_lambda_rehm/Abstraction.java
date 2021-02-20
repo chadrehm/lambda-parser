@@ -116,7 +116,7 @@ public class Abstraction implements LambdaExpr{
 				lambdaExpr = buildBody(body, new Application(), lambdaList.size() - 1);
 			}
 		}
-		
+		System.out.println("Abs: " + lambdaExpr.toString());
 		return lambdaExpr;
 	}
 

@@ -323,6 +323,16 @@ public class LambdaTest {
 	}
 	
 	@Test
+	public void testExecute_e () throws Exception  {
+		Controller controller = new Controller(frame, tarea, pane);
+		LambdaExpr lambda;
+		
+		lambda = controller.execute("(Ly. y y y x)(Lz. z w)");
+		String str = lambda.toString();
+		assertTrue(str.equals("x"));
+	}
+	
+	@Test
 	public void testExecute_parseException () throws Exception  {
 		Controller controller = new Controller(frame, tarea, pane);
 		LambdaExpr lambda;

@@ -7,7 +7,7 @@ package cs475_lambda_rehm;
 
 public class Simulator {
 	public LambdaExpr betaReduce(LambdaExpr expr) throws DivergentException{
-		
+		System.out.println(expr.toString());
 		if (expr.type() == ExprKind.APPLICATION) {
 			Application application = (Application)expr;
 			LambdaExpr operand1 = application.getOperand1();
