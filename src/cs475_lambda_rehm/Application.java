@@ -54,6 +54,8 @@ public class Application implements LambdaExpr{
 			}
 			if (app.getOperand2().type() == ExprKind.VARIABLE){
 				str.append(String.format("%s ",((Variable)app.getOperand2()).toString()));
+			} else {
+				str.append(String.format("%s ",((Abstraction)app.getOperand2()).toString()));
 			}
 		}
 		return str;

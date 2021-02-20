@@ -43,4 +43,9 @@ public class Variable implements LambdaExpr {
 		}
 		return name == ((Variable)o).getName();
 	}
+	
+	@Override
+	public int hashCode () {
+			return (int) this.name;
+	}
 }

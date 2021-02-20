@@ -1,5 +1,6 @@
 package cs475_lambda_rehm;
 
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
@@ -17,6 +18,15 @@ public class LambdaTest {
 	
 	public LambdaTest() {
 		
+	}
+	
+	@Test
+	public void testBuildExprArray() throws Exception{
+		Parser parser = new Parser();
+		ArrayList<LambdaExpr> exprArr = parser.buildExprList(new ArrayList<LambdaExpr>(),
+			"(x)(Ly. y)(k)", 0);
+		
+		int x = 1;
 	}
 	
 	@Test
@@ -70,6 +80,7 @@ public class LambdaTest {
 		}
 		
 		assertNotNull(error);
+		assertTrue(error.getMessage().equals("No opening parenthesis found."));
 	}
 	
 	@Test
@@ -78,12 +89,14 @@ public class LambdaTest {
 		ParseException error = null;
 		
 		try {
-			parser.parse("Lx. x x x)");
+			parser.parse("(Lx. x x x)x");
 		} catch (ParseException e) {
 			error = e;
 		}
 		
 		assertNotNull(error);
+		assertTrue(error.getMessage()
+			.equals("All terms must be wrapped in parenthesis."));
 	}
 
 	@Test
@@ -92,13 +105,45 @@ public class LambdaTest {
 		ParseException error = null;
 		
 		try {
-			parser.parse("Lx. x x x)");
+			parser.parse("(Lx. x x x");
 		} catch (ParseException e) {
 			error = e;
 		}
 		
 		assertNotNull(error);
+		assertTrue(error.getMessage().equals("No closing parenthesis found."));
 	}
+	
+	@Test
+	public void testParser_Error_4() throws Exception{
+		Parser parser = new Parser();
+		ParseException error = null;
+		
+		try {
+			parser.parse("(x x)");
+		} catch (ParseException e) {
+			error = e;
+		}
+		assertNotNull(error);
+		assertTrue(error.getMessage()
+			.equals("Variables must a single character in parenthesis."));
+	}
+	
+	@Test
+	public void testParser_Error_5() throws Exception{
+		Parser parser = new Parser();
+		ParseException error = null;
+		
+		try {
+			parser.parse("(Lx x)");
+		} catch (ParseException e) {
+			error = e;
+		}
+		assertNotNull(error);
+		assertTrue(error.getMessage()
+			.equals("Abstractions require a period after bounding Var."));
+	}
+	
 	// Full test
 	@Test
 	public void testParseAbstraction_single() throws Exception{
@@ -131,7 +176,7 @@ public class LambdaTest {
 	}
 	
 	@Test
-	public void testExecute_double_replace() {
+	public void testExecute_double_replace() throws Exception  {
 		Controller controller = new Controller(frame, tarea, pane);
 		LambdaExpr lambda;
 		
@@ -141,7 +186,7 @@ public class LambdaTest {
 	}
 	
 	@Test
-	public void testExecute_triple_replace() {
+	public void testExecute_triple_replace() throws Exception  {
 		Controller controller = new Controller(frame, tarea, pane);
 		LambdaExpr lambda;
 		
@@ -155,7 +200,7 @@ public class LambdaTest {
 	}
 	
 	@Test
-	public void testExecute_beta_reduce() {
+	public void testExecute_beta_reduce()  throws Exception {
 		Controller controller = new Controller(frame, tarea, pane);
 		LambdaExpr lambda;
 		
@@ -165,21 +210,123 @@ public class LambdaTest {
 	}
 	
 	@Test
-	public void testExecute_mocking_bird() {
+	public void testExecute_mocking_bird() throws Exception {
 		Controller controller = new Controller(frame, tarea, pane);
 		LambdaExpr lambda;
+		Exception error = null;
 		
-		lambda = controller.execute("(Lx. x x)(Lx. x x)");
-		String str = lambda.toString();
+		try {
+			lambda = controller.execute("(Lx. x x)(Lx. x x)");
+		} catch (Exception e) {
+			error = e;
+		}
 	}
 	
 	@Test
-	public void testExecute_var_abs() {
+	public void testExecute_var_abs() throws Exception  {
 		Controller controller = new Controller(frame, tarea, pane);
 		LambdaExpr lambda;
 		
 		lambda = controller.execute("(x)(Lx. x x)");
 		String str = lambda.toString();
 		assertTrue(str.equals("x Lx. x x"));
+	}
+	
+	@Test
+	public void testExecute_three_term() throws Exception  {
+		Controller controller = new Controller(frame, tarea, pane);
+		LambdaExpr lambda;
+		
+		lambda = controller.execute("(x)(Ly. y)(k)");
+		String str = lambda.toString();
+		assertTrue(str.equals("x Ly. y k"));
+	}
+	
+	@Test
+	public void testExecute_four_term_a() throws Exception  {
+		Controller controller = new Controller(frame, tarea, pane);
+		LambdaExpr lambda;
+		
+		lambda = controller.execute("(Lx. x y)(Lz. z)(Lr. r)(p)");
+		String str = lambda.toString();
+		assertTrue(str.equals("y Lr. r p"));
+	}
+	
+	@Test
+	public void testExecute_four_term_b() throws Exception  {
+		Controller controller = new Controller(frame, tarea, pane);
+		LambdaExpr lambda;
+		
+		lambda = controller.execute("(Lx. x y)(Lz. z)(r)(p)");
+		String str = lambda.toString();
+		assertTrue(str.equals("y r p"));
+	}
+	
+	@Test
+	public void testExecute_two_term () throws Exception  {
+		Controller controller = new Controller(frame, tarea, pane);
+		LambdaExpr lambda;
+		
+		lambda = controller.execute("(Ly. x y x)(Lz. z)");
+		String str = lambda.toString();
+		assertTrue(str.equals("x Lz. z x"));
+	}
+	
+	@Test
+	public void testExecute_two_term_b () throws Exception  {
+		Controller controller = new Controller(frame, tarea, pane);
+		LambdaExpr lambda;
+		
+		lambda = controller.execute("(Ly. y x)(Lz. z z)");
+		String str = lambda.toString();
+		assertTrue(str.equals("x x"));
+	}
+	
+	@Test
+	public void testExecute_a () throws Exception  {
+		Controller controller = new Controller(frame, tarea, pane);
+		LambdaExpr lambda;
+		
+		lambda = controller.execute("(Ly. y x y)(Lz. z z)");
+		String str = lambda.toString();
+		assertTrue(str.equals("x x Lz. z z"));
+	}
+	
+	@Test
+	public void testExecute_b () throws Exception  {
+		Controller controller = new Controller(frame, tarea, pane);
+		LambdaExpr lambda;
+		
+		lambda = controller.execute("(Ly. y x y)(Lz. z w z)");
+		String str = lambda.toString();
+		assertTrue(str.equals("x w x Lz. z w z"));
+	}
+	
+	@Test
+	public void testExecute_c () throws Exception  {
+		Controller controller = new Controller(frame, tarea, pane);
+		LambdaExpr lambda;
+		
+		lambda = controller.execute("(Ly. x y y)(Lz. z)");
+		String str = lambda.toString();
+		assertTrue(str.equals("x Lz. z Lz. z"));
+	}
+	
+	@Test
+	public void testExecute_d () throws Exception  {
+		Controller controller = new Controller(frame, tarea, pane);
+		LambdaExpr lambda;
+		
+		lambda = controller.execute("(Ly. y y x)(Lz. z)");
+		String str = lambda.toString();
+		assertTrue(str.equals("x"));
+	}
+	
+	@Test
+	public void testExecute_parseException () throws Exception  {
+		Controller controller = new Controller(frame, tarea, pane);
+		LambdaExpr lambda;
+		
+		lambda = controller.execute("Ly. y x)(Lz. z z)");
 	}
 }

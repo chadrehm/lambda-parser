@@ -6,7 +6,7 @@
 package cs475_lambda_rehm;
 
 public class Simulator {
-	public LambdaExpr betaReduce(LambdaExpr expr) {
+	public LambdaExpr betaReduce(LambdaExpr expr) throws DivergentException{
 		
 		if (expr.type() == ExprKind.APPLICATION) {
 			Application application = (Application)expr;
@@ -22,14 +22,22 @@ public class Simulator {
 					
 					// Check for loop
 					if (copyExpr.equals(expr.toString())) {
-						return expr;
+						throw new DivergentException("The function is divergent.");
 					}
 					if (operand1.type() == ExprKind.ABSTRACTION) {
 						expr = betaReduce(expr);
 					}
 				}
+			}  
+			if (operand1.type() == ExprKind.APPLICATION) {
+				((Application)expr).setOperand1(betaReduce(operand1));
 			}
 		} 
+		if (expr.type() == ExprKind.APPLICATION){
+			if(((Application)expr).getOperand1().type() == ExprKind.ABSTRACTION) {
+				expr = betaReduce(expr);
+			}
+		}
 		
 		return expr;
 	}

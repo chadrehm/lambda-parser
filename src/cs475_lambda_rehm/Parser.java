@@ -5,8 +5,41 @@
  */
 package cs475_lambda_rehm;
 
+import java.util.ArrayList;
+
 public class Parser {
-	public LambdaExpr parse(String term)  throws ParseException {
+	public ArrayList<LambdaExpr> buildExprList(ArrayList<LambdaExpr> exprList, String term, int idx) 
+		throws ParseException {
+		
+		int rightParenIndex = findBalancedRightParenPos(term);
+		
+		if (term.charAt(1) == 'L') {
+			exprList.add(parseAbstraction(term));
+		} else {
+			exprList.add(parseVariable(term.substring(0,rightParenIndex)));
+		}
+		
+		if (term.length() > rightParenIndex + 1) {
+			exprList = buildExprList(exprList, term.substring(rightParenIndex + 1), rightParenIndex + 1);
+		} 
+	
+		return exprList;
+	}
+	
+	protected Application buildExprTree(LambdaExpr[] body, Application root, int i) {
+		if (1 < i) {
+			Application temp;
+			temp = buildExprTree(body, new Application(), i - 1);
+			root.setOperand2(body[i]);
+			root.setOperand1(temp);
+		} else {
+			root.setOperand1(body[i - 1]);
+			root.setOperand2(body[i]);
+		}
+		return root;
+	}
+	
+	public LambdaExpr parse(String term) throws ParseException {
 		int rightParenIndex = findBalancedRightParenPos(term);
 		LambdaExpr lambdaExpr = null;
 		
@@ -25,12 +58,15 @@ public class Parser {
 		return lambdaExpr;
 	}
 	
-	private Abstraction parseAbstraction(String term) {
+	private Abstraction parseAbstraction(String term) throws ParseException {
 		Abstraction abstraction = new Abstraction();
 		
 		abstraction.setBoundVar(new Variable(term.charAt(2)));
 		
 		int period = term.indexOf(".");
+		if (period == -1) {
+			throw new ParseException("Abstractions require a period after bounding Var.");
+		}
 		// Get the next character after the period
 		String[] bodyStr = term.substring(period + 1, term.indexOf(")")).trim().split(" ");
 		LambdaExpr[] body = new LambdaExpr[bodyStr.length];
@@ -43,18 +79,28 @@ public class Parser {
 		return abstraction;		
 	}
 	
-	private Application parseApplication(String term) throws ParseException{
+	private Application parseApplication(String term) throws ParseException {
 		Application application = new Application();
-		int rightParenIndex = findBalancedRightParenPos(term);
+		ArrayList<LambdaExpr> exprList = new ArrayList<>();
+
+		exprList = buildExprList(exprList, term,0);
 		
-		application.setOperand1(parse(term.substring(0,rightParenIndex + 1)));
-		application.setOperand2(parse(term.substring(rightParenIndex + 1)));
+		LambdaExpr[] ExprArr = new LambdaExpr[exprList.size()];
+		for (int i = 0; i < exprList.size(); i++) {
+			ExprArr[i] = exprList.get(i);
+		}
+		application = buildExprTree(ExprArr, application, ExprArr.length - 1);
 		
 		return application;
 	} 
 	
-	private Variable parseVariable(String term) {
-		return new Variable(term.charAt(1));
+	private Variable parseVariable(String term) throws ParseException {
+		String str = term.replaceAll("[()]", "").trim();
+		if(str.length() != 1) {
+			throw new ParseException("Variables must a single character in parenthesis.");
+		}
+		
+		return new Variable(str.charAt(0));
 	}
 	
 	private int findBalancedRightParenPos(String term) throws ParseException {
@@ -80,10 +126,12 @@ public class Parser {
 			}
 			
 			loopCount++;
-		} while(loopCount <= term.length());
+		} while(loopCount < term.length());
 		
 		if (parenCount != 0) {
 			throw new ParseException("No closing parenthesis found.");
+		} else if (rightParenIndex == -1) {
+			throw new ParseException("All terms must be wrapped in parenthesis.");
 		}
 		
 		return rightParenIndex;

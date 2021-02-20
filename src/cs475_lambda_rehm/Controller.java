@@ -20,26 +20,30 @@ public class Controller{
 		this.pane = pane;
 	}
 	
-	public void runProgram() {
+	public void runProgram() throws Exception {
 		String userContinue = "y";
 		
 		while(!userContinue.equals("n")) {
 			String lambdaStr = this.promptInput();
-			
+	
 			LambdaExpr lambdaExpr = execute(lambdaStr);
-
 			displayLambdaExpr(lambdaExpr);
 			
 			userContinue = promptContinue();
 		}
 	}
 	
-	protected LambdaExpr execute(String lambdaStr) {
+	protected LambdaExpr execute(String lambdaStr) throws Exception{
 		Parser parser = new Parser();
 		Simulator simulator = new Simulator();
-		LambdaExpr lambdaExpr = parser.parse(lambdaStr);
-		lambdaExpr = simulator.betaReduce(lambdaExpr);
-	
+		LambdaExpr lambdaExpr = null;
+		
+		try {
+			lambdaExpr = parser.parse(lambdaStr);
+			lambdaExpr = simulator.betaReduce(lambdaExpr);
+		} catch (Exception error) {
+			showErrorMessage(error.getMessage());
+		}
 		return lambdaExpr;
 	}
 	
@@ -57,6 +61,14 @@ public class Controller{
 			JOptionPane.showMessageDialog(frame, String.format("The Lambda Expression is: %s",
 				((Application)lambdaExpr).toString()));
 		}
+	}
+	
+	/**
+	 * Show error message
+	 * @return
+	 */
+	private void showErrorMessage(String msg) {
+		pane.showMessageDialog(frame, msg);
 	}
 	
 	/**
