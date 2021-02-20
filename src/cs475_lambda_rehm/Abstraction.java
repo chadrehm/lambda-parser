@@ -153,6 +153,6 @@ public class Abstraction implements LambdaExpr{
 		} else if (body.type() == ExprKind.VARIABLE) {
 			str.append(((Variable)body).toString());
 		}
-		return str.toString().trim();
+		return String.format("(%s)", str.toString().trim());
 	}
 }

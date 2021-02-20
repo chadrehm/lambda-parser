@@ -229,7 +229,7 @@ public class LambdaTest {
 		
 		lambda = controller.execute("(x)(Lx. x x)");
 		String str = lambda.toString();
-		assertTrue(str.equals("x Lx. x x"));
+		assertTrue(str.equals("x (Lx. x) x"));
 	}
 	
 	@Test
@@ -239,7 +239,7 @@ public class LambdaTest {
 		
 		lambda = controller.execute("(x)(Ly. y)(k)");
 		String str = lambda.toString();
-		assertTrue(str.equals("x Ly. y k"));
+		assertTrue(str.equals("x (Ly. y) k"));
 	}
 	
 	@Test
@@ -249,7 +249,7 @@ public class LambdaTest {
 		
 		lambda = controller.execute("(Lx. x y)(Lz. z)(Lr. r)(p)");
 		String str = lambda.toString();
-		assertTrue(str.equals("y Lr. r p"));
+		assertTrue(str.equals("y (Lr. r) p"));
 	}
 	
 	@Test
@@ -269,7 +269,7 @@ public class LambdaTest {
 		
 		lambda = controller.execute("(Ly. x y x)(Lz. z)");
 		String str = lambda.toString();
-		assertTrue(str.equals("x Lz. z x"));
+		assertTrue(str.equals("x (Lz. z) x"));
 	}
 	
 	@Test
@@ -289,7 +289,7 @@ public class LambdaTest {
 		
 		lambda = controller.execute("(Ly. y x y)(Lz. z z)");
 		String str = lambda.toString();
-		assertTrue(str.equals("x x Lz. z z"));
+		assertTrue(str.equals("x x (Lz. z z)"));
 	}
 	
 	@Test
@@ -299,7 +299,7 @@ public class LambdaTest {
 		
 		lambda = controller.execute("(Ly. y x y)(Lz. z w z)");
 		String str = lambda.toString();
-		assertTrue(str.equals("x w x Lz. z w z"));
+		assertTrue(str.equals("x w x (Lz. z) w z"));
 	}
 	
 	@Test
@@ -309,7 +309,7 @@ public class LambdaTest {
 		
 		lambda = controller.execute("(Ly. x y y)(Lz. z)");
 		String str = lambda.toString();
-		assertTrue(str.equals("x Lz. z Lz. z"));
+		assertTrue(str.equals("x (Lz. z) (Lz. z)"));
 	}
 	
 	@Test
@@ -329,7 +329,7 @@ public class LambdaTest {
 		
 		lambda = controller.execute("(Ly. y y y x)(Lz. z w)");
 		String str = lambda.toString();
-		assertTrue(str.equals("x"));
+		assertTrue(str.equals("w w (Lz. z w) x"));
 	}
 	
 	@Test

@@ -41,46 +41,8 @@ public class Application implements LambdaExpr{
 		return ExprKind.APPLICATION;
 	}
 	
-	protected StringBuilder flattenBody(Application app, StringBuilder str) {
-		if (app.getOperand1().type() == ExprKind.APPLICATION) {
-			str = flattenBody((Application)app.getOperand1(), str);
-			
-			if (app.getOperand2().type() == ExprKind.VARIABLE){
-				str.append(String.format("%s ",((Variable)app.getOperand2()).toString()));
-			}
-		} else {
-			if (app.getOperand1().type() == ExprKind.VARIABLE){
-				str.append(String.format("%s ",((Variable)app.getOperand1()).toString()));
-			}
-			if (app.getOperand2().type() == ExprKind.VARIABLE){
-				str.append(String.format("%s ",((Variable)app.getOperand2()).toString()));
-			} else {
-				str.append(String.format("%s ",((Abstraction)app.getOperand2()).toString()));
-			}
-		}
-		return str;
-	}
-	
 	@Override
 	public String toString() {
-		StringBuilder str = new StringBuilder(); 
-		
-		if (operand1.type() == ExprKind.VARIABLE) {
-			str.append(String.format("%s ", ((Variable)operand1).toString()));
-		} else if (operand1.type() == ExprKind.ABSTRACTION) {
-			str.append(String.format("%s ", ((Abstraction)operand1).toString()));
-		} else {
-			str = flattenBody((Application)operand1, str);
-		}
-		
-		if (operand2.type() == ExprKind.VARIABLE) {
-			str.append(((Variable)operand2).toString());
-		} else if (operand2.type() == ExprKind.ABSTRACTION) {
-			str.append(((Abstraction)operand2).toString());
-		} else {
-			str = flattenBody((Application)operand2, str);
-		}
-		
-		return str.toString();
+		return String.format("%s %s", operand1.toString(), operand2.toString());
 	}
 }
