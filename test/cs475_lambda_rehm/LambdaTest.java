@@ -348,4 +348,12 @@ public class LambdaTest {
 		
 		lambda = controller.execute("(Ly.y y)(Lz.z z z)");
 	}
+	
+	@Test
+	public void testExecute_parseException_c () throws Exception  {
+		Controller controller = new Controller(frame, tarea, pane);
+		LambdaExpr lambda;
+		
+		lambda = controller.execute("(Ly.y y y)(Lz.z z)");
+	}
 }
