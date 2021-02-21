@@ -43,6 +43,7 @@ public class Controller{
 			lambdaExpr = simulator.betaReduce(lambdaExpr);
 		} catch (Exception error) {
 			showErrorMessage(error.getMessage());
+			throw new Error(error.getMessage());
 		}
 		return lambdaExpr;
 	}

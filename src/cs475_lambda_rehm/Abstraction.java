@@ -73,50 +73,34 @@ public class Abstraction implements LambdaExpr{
 		LambdaExpr lambdaExpr = null;
 		ArrayList<LambdaExpr> lambdaList = new ArrayList<>();
 		
+		// Convert tree to Array of Lambda Expr
 		if (body.type() == ExprKind.APPLICATION) {
 			lambdaList = flattenBody((Application)body, new ArrayList<LambdaExpr>());
 		}
 		
-		if (var != null) {
-			if (body.type() == ExprKind.VARIABLE) {
-				// This is the identity function
-				if (boundVar.getName() == ((Variable)body).getName()) {
-					lambdaExpr = var;
-				}
-				// This is the constant function
-				else {
-					lambdaExpr = body;
-				}
-			} else if (body.type() == ExprKind.APPLICATION) {
-				Collections.replaceAll(lambdaList, boundVar, var);
-				LambdaExpr[] body = new LambdaExpr[lambdaList.size()];
-		
-				for (int i = 0; i < lambdaList.size(); i++) {
-					body[i] = lambdaList.get(i);
-				}
-				lambdaExpr = buildBody(body, new Application(), lambdaList.size() - 1);
+		if (body.type() == ExprKind.VARIABLE) {
+			// This is the identity function
+			if (boundVar.getName() == ((Variable)body).getName()) {
+				lambdaExpr = var == null ? value : var;
 			}
-		} else if(value.type() == ExprKind.ABSTRACTION) {
-			if (body.type() == ExprKind.VARIABLE) {
-				// This is the identity function
-				if (boundVar.getName() == ((Variable)body).getName()) {
-					lambdaExpr = value;
-				}
-				// This is the constant function
-				else {
-					lambdaExpr = body;
-				}
-			} else if (body.type() == ExprKind.APPLICATION) {
-				Collections.replaceAll(lambdaList, boundVar, value);
+			// This is the constant function
+			else {
+				lambdaExpr = body;
+			}
+		} else {
+			if (body.type() == ExprKind.APPLICATION) {
+				// replace bound variable with new term
+				Collections.replaceAll(lambdaList, boundVar, var == null ? value : var);
 				LambdaExpr[] body = new LambdaExpr[lambdaList.size()];
 		
+				// Transition ArrayList values to Array
 				for (int i = 0; i < lambdaList.size(); i++) {
 					body[i] = lambdaList.get(i);
 				}
 				lambdaExpr = buildBody(body, new Application(), lambdaList.size() - 1);
 			}
 		}
-		System.out.println("Abs: " + lambdaExpr.toString());
+		
 		return lambdaExpr;
 	}
 

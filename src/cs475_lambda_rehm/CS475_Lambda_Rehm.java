@@ -21,6 +21,7 @@ public class CS475_Lambda_Rehm {
 					controller.runProgram();
 				} catch (Exception e) {
 					System.out.println("An error occured");
+					System.exit(0);
 				}
 			}
 		});

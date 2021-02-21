@@ -162,7 +162,7 @@ public class LambdaTest {
 		
 		lambda = parser.parse("(Lx. x)");
 		String str = lambda.toString();
-		assertTrue(str.equals("Lx. x"));
+		assertTrue(str.equals("(Lx. x)"));
 	}
 	
 	@Test
@@ -172,7 +172,7 @@ public class LambdaTest {
 		
 		lambda = parser.parse("(Lx. x y x)");
 		String str = lambda.toString();
-		assertTrue(str.equals("Lx. x y x"));
+		assertTrue(str.equals("(Lx. x y x)"));
 	}
 	
 	@Test
@@ -229,7 +229,7 @@ public class LambdaTest {
 		
 		lambda = controller.execute("(x)(Lx. x x)");
 		String str = lambda.toString();
-		assertTrue(str.equals("x (Lx. x) x"));
+		assertTrue(str.equals("x (Lx. x x)"));
 	}
 	
 	@Test
@@ -299,7 +299,7 @@ public class LambdaTest {
 		
 		lambda = controller.execute("(Ly. y x y)(Lz. z w z)");
 		String str = lambda.toString();
-		assertTrue(str.equals("x w x (Lz. z) w z"));
+		assertTrue(str.equals("x w x (Lz. z w z)"));
 	}
 	
 	@Test
