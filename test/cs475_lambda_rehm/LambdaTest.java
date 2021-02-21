@@ -210,19 +210,6 @@ public class LambdaTest {
 	}
 	
 	@Test
-	public void testExecute_mocking_bird() throws Exception {
-		Controller controller = new Controller(frame, tarea, pane);
-		LambdaExpr lambda;
-		Exception error = null;
-		
-		try {
-			lambda = controller.execute("(Lx. x x)(Lx. x x)");
-		} catch (Exception e) {
-			error = e;
-		}
-	}
-	
-	@Test
 	public void testExecute_var_abs() throws Exception  {
 		Controller controller = new Controller(frame, tarea, pane);
 		LambdaExpr lambda;
@@ -338,5 +325,27 @@ public class LambdaTest {
 		LambdaExpr lambda;
 		
 		lambda = controller.execute("Ly. y x)(Lz. z z)");
+	}
+	
+	// Divergent test	
+	@Test
+	public void testExecute_mocking_bird() throws Exception {
+		Controller controller = new Controller(frame, tarea, pane);
+		LambdaExpr lambda;
+		Exception error = null;
+		
+		try {
+			lambda = controller.execute("(Lx. x x)(Lx. x x)");
+		} catch (Exception e) {
+			error = e;
+		}
+	}
+	
+	@Test
+	public void testExecute_parseException_b () throws Exception  {
+		Controller controller = new Controller(frame, tarea, pane);
+		LambdaExpr lambda;
+		
+		lambda = controller.execute("(Ly.y y)(Lz.z z z)");
 	}
 }

@@ -8,37 +8,7 @@ package cs475_lambda_rehm;
 import java.util.ArrayList;
 
 public class Parser {
-	public ArrayList<LambdaExpr> buildExprList(ArrayList<LambdaExpr> exprList, String term, int idx) 
-		throws ParseException {
-		
-		int rightParenIndex = findBalancedRightParenPos(term);
-		
-		if (term.charAt(1) == 'L') {
-			exprList.add(parseAbstraction(term));
-		} else {
-			exprList.add(parseVariable(term.substring(0,rightParenIndex)));
-		}
-		
-		if (term.length() > rightParenIndex + 1) {
-			exprList = buildExprList(exprList, term.substring(rightParenIndex + 1), rightParenIndex + 1);
-		} 
-	
-		return exprList;
-	}
-	
-	protected Application buildExprTree(LambdaExpr[] body, Application root, int i) {
-		if (1 < i) {
-			Application temp;
-			temp = buildExprTree(body, new Application(), i - 1);
-			root.setOperand2(body[i]);
-			root.setOperand1(temp);
-		} else {
-			root.setOperand1(body[i - 1]);
-			root.setOperand2(body[i]);
-		}
-		return root;
-	}
-	
+
 	public LambdaExpr parse(String term) throws ParseException {
 		int rightParenIndex = findBalancedRightParenPos(term);
 		LambdaExpr lambdaExpr = null;
@@ -71,6 +41,7 @@ public class Parser {
 		String[] bodyStr = term.substring(period + 1, term.indexOf(")")).trim().split(" ");
 		LambdaExpr[] body = new LambdaExpr[bodyStr.length];
 		
+		// All terms in body are of type Variable 
 		for (int i = 0; i < bodyStr.length; i++) {
 			body[i] = new Variable(bodyStr[i].charAt(0));
 		}
@@ -108,6 +79,10 @@ public class Parser {
 		int loopCount = 0;
 		int rightParenIndex = -1;
 		
+		if (term.length() == 0) {
+			throw new ParseException("Blank inputs are not valid.");
+		}
+		
 		do {
 			if(term.charAt(loopCount) == '(') {
 				parenCount++;
@@ -136,4 +111,36 @@ public class Parser {
 		
 		return rightParenIndex;
 	}
+	
+	public ArrayList<LambdaExpr> buildExprList(ArrayList<LambdaExpr> exprList, String term, int idx) 
+		throws ParseException {
+		
+		int rightParenIndex = findBalancedRightParenPos(term);
+		
+		if (term.charAt(1) == 'L') {
+			exprList.add(parseAbstraction(term));
+		} else {
+			exprList.add(parseVariable(term.substring(0,rightParenIndex)));
+		}
+		
+		if (term.length() > rightParenIndex + 1) {
+			exprList = buildExprList(exprList, term.substring(rightParenIndex + 1), rightParenIndex + 1);
+		} 
+	
+		return exprList;
+	}
+	
+	protected Application buildExprTree(LambdaExpr[] body, Application root, int i) {
+		if (1 < i) {
+			Application temp;
+			temp = buildExprTree(body, new Application(), i - 1);
+			root.setOperand2(body[i]);
+			root.setOperand1(temp);
+		} else {
+			root.setOperand1(body[i - 1]);
+			root.setOperand2(body[i]);
+		}
+		return root;
+	}
+	
 }

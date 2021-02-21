@@ -47,7 +47,7 @@ public class Abstraction implements LambdaExpr{
 
 	@Override
 	public String copy() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return this.toString();
 	}
 	
 	protected ArrayList<LambdaExpr> flattenBody(Application app, ArrayList<LambdaExpr> lambdaList) {
@@ -71,12 +71,6 @@ public class Abstraction implements LambdaExpr{
 	@Override
 	public LambdaExpr substitute(Variable var, LambdaExpr value) {
 		LambdaExpr lambdaExpr = null;
-		ArrayList<LambdaExpr> lambdaList = new ArrayList<>();
-		
-		// Convert tree to Array of Lambda Expr
-		if (body.type() == ExprKind.APPLICATION) {
-			lambdaList = flattenBody((Application)body, new ArrayList<LambdaExpr>());
-		}
 		
 		if (body.type() == ExprKind.VARIABLE) {
 			// This is the identity function
@@ -89,15 +83,17 @@ public class Abstraction implements LambdaExpr{
 			}
 		} else {
 			if (body.type() == ExprKind.APPLICATION) {
-				// replace bound variable with new term
+				// Replace bound variable with new term
+				ArrayList<LambdaExpr> lambdaList = 
+					flattenBody((Application)body, new ArrayList<>());
 				Collections.replaceAll(lambdaList, boundVar, var == null ? value : var);
-				LambdaExpr[] body = new LambdaExpr[lambdaList.size()];
+				LambdaExpr[] bodyArr = new LambdaExpr[lambdaList.size()];
 		
 				// Transition ArrayList values to Array
 				for (int i = 0; i < lambdaList.size(); i++) {
-					body[i] = lambdaList.get(i);
+					bodyArr[i] = lambdaList.get(i);
 				}
-				lambdaExpr = buildBody(body, new Application(), lambdaList.size() - 1);
+				lambdaExpr = buildBody(bodyArr, new Application(), lambdaList.size() - 1);
 			}
 		}
 		
@@ -113,16 +109,10 @@ public class Abstraction implements LambdaExpr{
 		if (app.getOperand1().type() == ExprKind.APPLICATION) {
 			str = flattenBody((Application)app.getOperand1(), str);
 			
-			if (app.getOperand2().type() == ExprKind.VARIABLE){
-				str.append(String.format("%s ",((Variable)app.getOperand2()).toString()));
-			}
+			str.append(String.format("%s ",app.getOperand2().toString()));
 		} else {
-			if (app.getOperand1().type() == ExprKind.VARIABLE){
-				str.append(String.format("%s ",((Variable)app.getOperand1()).toString()));
-			}
-			if (app.getOperand2().type() == ExprKind.VARIABLE){
-				str.append(String.format("%s ",((Variable)app.getOperand2()).toString()));
-			}
+			str.append(String.format("%s %s ",
+				app.getOperand1().toString(), app.getOperand2().toString()));
 		}
 		return str;
 	}
@@ -135,7 +125,7 @@ public class Abstraction implements LambdaExpr{
 		if (body.type() == ExprKind.APPLICATION) {
 			str = flattenBody((Application)body, str);
 		} else if (body.type() == ExprKind.VARIABLE) {
-			str.append(((Variable)body).toString());
+			str.append(body.toString());
 		}
 		return String.format("(%s)", str.toString().trim());
 	}

@@ -21,9 +21,11 @@ public class Simulator {
 					expr = operand1.substitute(null, (Abstraction)operand2);
 					
 					// Check for loop
-					if (copyExpr.equals(expr.toString())) {
+					if (expr.type() == ExprKind.APPLICATION 
+						&& ((Application)expr).getOperand1().toString().equals(copyExpr)) {			
 						throw new DivergentException("The function is divergent.");
 					}
+					
 					if (operand1.type() == ExprKind.ABSTRACTION) {
 						expr = betaReduce(expr);
 					}
