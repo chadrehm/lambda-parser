@@ -9,6 +9,13 @@ import java.util.ArrayList;
 
 public class Parser {
 
+	/**
+	 * Parse user input for use with the simulator. 
+	 * 
+	 * @param term
+	 * @return
+	 * @throws ParseException
+	 */
 	public LambdaExpr parse(String term) throws ParseException {
 		int rightParenIndex = findBalancedRightParenPos(term);
 		LambdaExpr lambdaExpr = null;
@@ -112,7 +119,16 @@ public class Parser {
 		return rightParenIndex;
 	}
 	
-	public ArrayList<LambdaExpr> buildExprList(ArrayList<LambdaExpr> exprList, String term, int idx) 
+	/**
+	 * Create a list of Lambda expressions for use by the tree builder.
+	 * 
+	 * @param exprList
+	 * @param term
+	 * @param idx
+	 * @return
+	 * @throws ParseException
+	 */
+	protected ArrayList<LambdaExpr> buildExprList(ArrayList<LambdaExpr> exprList, String term, int idx) 
 		throws ParseException {
 		
 		int rightParenIndex = findBalancedRightParenPos(term);
@@ -130,6 +146,14 @@ public class Parser {
 		return exprList;
 	}
 	
+	/**
+	 * Build a tree structure from the list of Lambda expressions
+	 * 
+	 * @param body
+	 * @param root
+	 * @param i
+	 * @return
+	 */
 	protected Application buildExprTree(LambdaExpr[] body, Application root, int i) {
 		if (1 < i) {
 			Application temp;

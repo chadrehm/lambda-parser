@@ -342,7 +342,7 @@ public class LambdaTest {
 	}
 	
 	@Test
-	public void testExecute_parseException_b () throws Exception  {
+	public void testExecute_divergentException_b () throws Exception  {
 		Controller controller = new Controller(frame, tarea, pane);
 		LambdaExpr lambda;
 		
@@ -350,7 +350,7 @@ public class LambdaTest {
 	}
 	
 	@Test
-	public void testExecute_parseException_c () throws Exception  {
+	public void testExecute_divergentException_c () throws Exception  {
 		Controller controller = new Controller(frame, tarea, pane);
 		LambdaExpr lambda;
 		

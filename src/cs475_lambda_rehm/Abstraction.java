@@ -12,10 +12,23 @@ public class Abstraction implements LambdaExpr{
 	private Variable boundVar;
 	private LambdaExpr body;
 
+	/**
+	 * Setter for bound variable 
+	 * 
+	 * @param boundVar
+	 */
 	public void setBoundVar(Variable boundVar) {
 		this.boundVar = boundVar;
 	}
 	
+	/**
+	 * Create a tree structure that represents the body of the abstraction
+	 * 
+	 * @param body
+	 * @param root
+	 * @param i
+	 * @return
+	 */
 	protected Application buildBody(LambdaExpr[] body, Application root, int i) {
 		if (1 < i) {
 			Application temp;
@@ -29,6 +42,11 @@ public class Abstraction implements LambdaExpr{
 		return root;
 	} 
 
+	/**
+	 * Setter for abstraction body
+	 * 
+	 * @param body
+	 */
 	public void setBody(LambdaExpr[] body) {
 		if(body.length > 1) {
 			this.body = buildBody(body, new Application(), body.length - 1);
@@ -37,19 +55,40 @@ public class Abstraction implements LambdaExpr{
 		}
 	}
 
+	/**
+	 * Getter for abstraction bounded variable
+	 * 
+	 * @return
+	 */
 	public Variable getBoundVar() {
 		return boundVar;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public LambdaExpr getBody() {
 		return body;
 	}
 
+	/**
+	 * Copy abstraction
+	 * 
+	 * @return
+	 */
 	@Override
 	public String copy() {
 		return this.toString();
 	}
 	
+	/**
+	 *	Convert tree to an Array list.  Used by substitution to replace bounded variable
+	 * 
+	 * @param app
+	 * @param lambdaList
+	 * @return
+	 */
 	protected ArrayList<LambdaExpr> flattenBody(Application app, ArrayList<LambdaExpr> lambdaList) {
 		if (app.getOperand1().type() == ExprKind.APPLICATION) {
 			lambdaList = flattenBody((Application)app.getOperand1(), lambdaList);
@@ -68,6 +107,13 @@ public class Abstraction implements LambdaExpr{
 		return lambdaList;
 	}
 
+	/**
+	 * Substitute provided term for bounded variable
+	 * 
+	 * @param var
+	 * @param value
+	 * @return
+	 */
 	@Override
 	public LambdaExpr substitute(Variable var, LambdaExpr value) {
 		LambdaExpr lambdaExpr = null;
@@ -100,11 +146,23 @@ public class Abstraction implements LambdaExpr{
 		return lambdaExpr;
 	}
 
+	/**
+	 * Type of Lambda expression component
+	 * 
+	 * @return
+	 */
 	@Override
 	public ExprKind type() {
 		return ExprKind.ABSTRACTION;
 	}
 	
+	/**
+	 * Flatten the body tree structure into a string
+	 * 
+	 * @param app
+	 * @param str
+	 * @return
+	 */
 	protected StringBuilder flattenBody(Application app, StringBuilder str) {
 		if (app.getOperand1().type() == ExprKind.APPLICATION) {
 			str = flattenBody((Application)app.getOperand1(), str);

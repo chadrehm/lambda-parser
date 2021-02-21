@@ -20,11 +20,18 @@ public class Controller{
 		this.pane = pane;
 	}
 	
+	/**
+	 * Start the program that will interact with the user.
+	 * 
+	 * @throws Exception
+	 */
 	public void runProgram() throws Exception {
 		String userContinue = "y";
 		
 		while(!userContinue.equals("n")) {
 			String lambdaStr = this.promptInput();
+			
+			lambdaStr = lambdaStr.replaceAll("(\\) \\()", ")(");
 	
 			LambdaExpr lambdaExpr = execute(lambdaStr);
 			displayLambdaExpr(lambdaExpr);
@@ -33,6 +40,14 @@ public class Controller{
 		}
 	}
 	
+	/**
+	 *	Actually execute the program.  This is split out so that the unit tests
+	 * do not trigger UI unless an error is thrown.
+	 * 
+	 * @param lambdaStr
+	 * @return
+	 * @throws Exception
+	 */
 	protected LambdaExpr execute(String lambdaStr) throws Exception{
 		Parser parser = new Parser();
 		Simulator simulator = new Simulator();

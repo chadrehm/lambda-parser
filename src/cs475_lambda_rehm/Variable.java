@@ -12,20 +12,42 @@ public class Variable implements LambdaExpr {
 		this.name = name;
 	}
 
+	/**
+	 * Getter for Variable name
+	 * 
+	 * @return
+	 */
 	public char getName() {
 		return name;
 	}
 
+	/**
+	 * Copy Variable
+	 * 
+	 * @return
+	 */
 	@Override
 	public String copy() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return this.toString();
 	}
 
+	/**
+	 * Substitute Variable
+	 * 
+	 * @param var
+	 * @param value
+	 * @return
+	 */
 	@Override
 	public LambdaExpr substitute(Variable var, LambdaExpr value) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return var == null ? value : var;
 	}
 
+	/**
+	 * Type of Lambda expression component
+	 * 
+	 * @return
+	 */
 	@Override
 	public ExprKind type() {
 		return ExprKind.VARIABLE;
